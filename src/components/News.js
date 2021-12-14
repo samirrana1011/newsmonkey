@@ -4,14 +4,10 @@ import Spinner from './Spinner';
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default class News extends Component {
-    // articles=[
-    //     {"source":{"id":null,"name":"NDTV News"},"author":"NDTV Sports Desk","title":"Yuvraj Singh, Others In Splits As Indian Cricketer Shares \"Selfie\" With Ariana Grande - NDTV Sports","description":"Ex-PBKS all-rounder Harpreet Brar has gone viral once again, but this time for his off the field antics. Brar shared a unique selfie with American pop star Ariana Grande.","url":"https://sports.ndtv.com/cricket/yuvraj-singh-others-in-splits-as-indian-cricketer-shares-selfie-with-ariana-grande-2648558","urlToImage":"https://c.ndtvimg.com/2021-12/e7c2tj9g_harpreet-brar-twitter_650x300_13_December_21.jpg","publishedAt":"2021-12-13T08:19:00Z","content":"Harpreet Brar, who played for Punjab Kings (PBKS) during Indian Premier League (IPL) 2021, grabbed eyeballs after taking the wickets of Virat Kohli, AB de Villiers and Glenn Maxwell in a game against… [+2312 chars]"},{"source":{"id":null,"name":"Hindustan Times"},"author":"hindustantimes.com","title":"'How many more runs should he score to prove himself?': Vengsarkar names 24-year-old batter BCCI should pick for SA ODIs - Hindustan Times","description":"The 24-year-old Maharashtra captain has been in blistering form, scoring three consecutive tons in the ongoing Vijay Hazare Trophy. | Cricket","url":"https://www.hindustantimes.com/cricket/no-point-in-picking-him-when-he-ll-be-28-ex-india-selector-dilip-vengsarkar-backs-ruturaj-gaikwad-for-south-africa-series-101639377140065.html","urlToImage":"https://images.hindustantimes.com/img/2021/12/13/1600x900/assignment-name-in-brief_ffe18048-781e-11ea-b578-8bb50559d90e_1639377570393.jpg","publishedAt":"2021-12-13T06:42:50Z","content":"While the suspense has been lifted off India's Test squad for the tour of South Africa, the ODI unit still remains a mystery. With the three-match ODIs between India and South Africa starting January… [+2403 chars]"}
-    // ];
     static defaultProps={
         country:'in',
         pagesize:'10',
-        category:'technology',
-        API: 'fed9d1efed2840909c391da37cfe3787'
+        category:'general'
     }
     constructor(props){
         super(props);     
@@ -24,18 +20,21 @@ export default class News extends Component {
         document.title= this.props.category + " : NewsMonkey";
     }
     async updateNews(){
-        
+
+    this.props.setProgress(0); 
     let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.API}&page=${this.state.page}&pagesize=${this.props.pagesize}`;
     this.setState({loading:true});
     let data=await fetch(url);
+    this.props.setProgress(30)
     let parseData=await data.json();
-    
+    this.props.setProgress(70)
     this.setState({
                 articles: parseData.articles,
                 totalResults: parseData.totalResults,
                 loading:false,
                 
             });
+    this.props.setProgress(100);
         console.log(parseData.totalResults)
 
           
@@ -63,6 +62,7 @@ export default class News extends Component {
       };
 
     render() {
+        
         return (
             <>
             <h1 className='text-center' style={{margin : '40px'}}>News Monkey : {this.props.category} Top headlines</h1>
